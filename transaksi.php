@@ -56,148 +56,96 @@ $riwayat = $conn->query($query_riwayat);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaksi</title>
     <style>
-       /* Global Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
-}
+       /* Styles */
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+           font-family: 'Arial', sans-serif;
+       }
 
-body {
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-}
+       body {
+           background-color: #f9f9f9;
+           color: #333;
+           line-height: 1.6;
+           display: flex;
+           justify-content: center;
+           padding: 20px;
+       }
 
-.container {
-    max-width: 900px;
-    width: 100%;
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+       .container {
+           max-width: 900px;
+           width: 100%;
+           background-color: #fff;
+           padding: 20px 30px;
+           border-radius: 8px;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+       }
 
-/* Header Styles */
-h1, h2 {
-    color: #180161;
-    text-align: center;
-    margin-bottom: 20px;
-}
+       h1, h2 {
+           color: #180161;
+           text-align: center;
+           margin-bottom: 20px;
+       }
 
-/* Form Styles */
-form {
-    margin-bottom: 30px;
-}
+       form {
+           margin-bottom: 30px;
+       }
 
-.item {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-}
+       .item {
+           margin-bottom: 15px;
+           display: flex;
+           flex-direction: column;
+       }
 
-select, input[type="number"], button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f5f5f5;
-}
+       input[type="text"], select, input[type="number"], button {
+           width: 100%;
+           padding: 10px;
+           margin: 5px 0;
+           font-size: 1rem;
+           border: 1px solid #ccc;
+           border-radius: 5px;
+           background-color: #f5f5f5;
+       }
 
-select:focus, input[type="number"]:focus {
-    outline: none;
-    border-color: #180161;
-    background-color: #fff;
-}
+       button {
+           background-color: #180161;
+           color: #fff;
+           border: none;
+           cursor: pointer;
+           transition: background-color 0.3s;
+       }
 
-button {
-    background-color: #180161;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+       button:hover {
+           background-color: #540096;
+       }
 
-button:hover {
-    background-color: #540096;
-}
+       table {
+           width: 100%;
+           border-collapse: collapse;
+           margin-bottom: 30px;
+       }
 
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 30px;
-}
+       table th, table td {
+           border: 1px solid #ddd;
+           padding: 10px;
+           text-align: center;
+       }
 
-table th, table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-}
+       table th {
+           background-color: #180161;
+           color: #fff;
+           font-weight: bold;
+       }
 
-table th {
-    background-color: #180161;
-    color: #fff;
-    font-weight: bold;
-}
-
-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-table tr:hover {
-    background-color: #f5f5f5;
-}
-
-/* Success Message */
-.success {
-    color: #155724;
-    background-color: #d4edda;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Link Styles */
-a {
-    display: block;
-    width: 100%;
-    padding: 12px 0;
-    text-align: center;
-    background-color: #4CAF50;
-    color: #fff;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    font-size: 1rem;
-}
-
-a:hover {
-    background-color: #45a049;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-
-    table th, table td {
-        font-size: 0.9rem;
-    }
-
-    button, select, input {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-}
+       .success {
+           color: #155724;
+           background-color: #d4edda;
+           padding: 10px;
+           border-radius: 5px;
+           margin-bottom: 20px;
+           text-align: center;
+       }
 
     </style>
 </head>
@@ -213,16 +161,22 @@ a:hover {
     <form action="transaksi.php" method="POST">
         <div id="items-container">
             <div class="item">
-                <select name="items[0][produk_id]" required>
+                <!-- Input Pencarian -->
+                <input type="text" id="search-product" placeholder="Cari produk..." onkeyup="filterProducts()" />
+
+                <!-- Dropdown Produk -->
+                <select id="product-dropdown" name="items[0][produk_id]" required>
                     <option value="">Pilih Produk</option>
                     <?php
                     $query = "SELECT * FROM produk";
                     $result = $conn->query($query);
                     while ($row = $result->fetch_assoc()) {
-                        echo "<option value='{$row['id']}'>{$row['nama_produk']} (Stok: {$row['stok']})</option>";
+                        echo "<option value='{$row['id']}' data-name='".strtolower($row['nama_produk'])."'>{$row['nama_produk']} (Stok: {$row['stok']})</option>";
                     }
                     ?>
                 </select>
+
+                <!-- Input Jumlah -->
                 <input type="number" name="items[0][jumlah]" placeholder="Jumlah" min="1" required>
             </div>
         </div>
@@ -231,7 +185,7 @@ a:hover {
 
     <!-- Riwayat Transaksi -->
     <h2>Riwayat Transaksi</h2>
-    <table border="1">
+    <table>
         <thead>
             <tr>
                 <th>ID Transaksi</th>
@@ -251,9 +205,25 @@ a:hover {
             <?php endwhile; ?>
         </tbody>
     </table>
-
-    <!-- Tombol kembali ke dashboard -->
     <a href="dashboard.php">Kembali ke Dashboard</a>
 </div>
+
+<script>
+function filterProducts() {
+    const searchInput = document.getElementById('search-product').value.toLowerCase();
+    const dropdown = document.getElementById('product-dropdown');
+    const options = dropdown.options;
+
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        const productName = option.getAttribute('data-name');
+        if (productName && productName.includes(searchInput)) {
+            option.style.display = 'block';
+        } else {
+            option.style.display = 'none';
+        }
+    }
+}
+</script>
 </body>
 </html>

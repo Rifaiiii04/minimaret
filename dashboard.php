@@ -1,9 +1,21 @@
 <?php
 session_start();
+require 'db_connect.php';
+
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit;
 }
+
+// Mengambil total produk
+$query_produk = "SELECT COUNT(*) AS total_produk FROM produk";
+$result_produk = $conn->query($query_produk);
+$total_produk = $result_produk->fetch_assoc()['total_produk'];
+
+// Mengambil total transaksi
+$query_transaksi = "SELECT COUNT(*) AS total_transaksi FROM transaksi";
+$result_transaksi = $conn->query($query_transaksi);
+$total_transaksi = $result_transaksi->fetch_assoc()['total_transaksi'];
 ?>
 
 <!DOCTYPE html>
@@ -43,6 +55,32 @@ if (!isset($_SESSION['user'])) {
             margin-bottom: 30px;
         }
 
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            width: 48%;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .info-box h2 {
+            font-size: 1.5rem;
+            color: #180161;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
         nav ul {
             list-style: none;
             padding: 0;
@@ -78,6 +116,16 @@ if (!isset($_SESSION['user'])) {
                 padding: 20px;
             }
 
+            .info-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .info-box {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
             nav ul {
                 flex-direction: column;
                 align-items: center;
@@ -91,7 +139,17 @@ if (!isset($_SESSION['user'])) {
 </head>
 <body>
     <div class="dashboard-container">
-        <h1>Welcome, <?php echo htmlspecialchars($_SESSION['user']); ?>!</h1>
+        <h1>POS Minimart</h1>
+        <div class="info-section">
+            <div class="info-box">
+                <h2>Total Produk</h2>
+                <p><?php echo $total_produk; ?> Produk</p>
+            </div>
+            <div class="info-box">
+                <h2>Total Transaksi</h2>
+                <p><?php echo $total_transaksi; ?> Transaksi</p>
+            </div>
+        </div>
         <nav>
             <ul>
                 <li><a href="daftar_produk.php">Manage Produk</a></li>
